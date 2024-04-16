@@ -200,10 +200,10 @@ There is barely any heterogeneity in the chosen markers across the clusters (Fig
 this is perhaps unsurprising given that all cells should be HSCs of some sort.
 
 ```{r unref-nest-facs, fig.cap="Heatmap of the centered log-average intensity for each target protein quantified by FACS in the Nestorowa HSC dataset."}
-Y <- colData(sce.nest)$FACS
-keep <- rowSums(is.na(Y))==0 # Removing NA intensities.
+Y <- assay(altExp(sce.nest, "FACS"))
+keep <- colSums(is.na(Y))==0 # Removing NA intensities.
 
-se.averaged <- sumCountsAcrossCells(t(Y[keep,]), 
+se.averaged <- sumCountsAcrossCells(Y[,keep], 
     colLabels(sce.nest)[keep], average=TRUE)
 averaged <- assay(se.averaged)
 
