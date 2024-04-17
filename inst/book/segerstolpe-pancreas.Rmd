@@ -14,7 +14,7 @@ consisting of human pancreas cells from various donors.
 
 ```{r loading}
 library(scRNAseq)
-sce.seger <- SegerstolpePancreasData(legacy=TRUE)
+sce.seger <- SegerstolpePancreasData()
 ```
 
 ```{r gene-annotation}
@@ -56,13 +56,13 @@ We then perform additional quality control as some of the remaining cells still 
 For some batches that seem to have a majority of low-quality cells (Figure \@ref(fig:unref-seger-qc-dist)), we use the other batches to define an appropriate threshold via `subset=`.
 
 ```{r quality-control}
-low.qual <- sce.seger$Quality == "low quality cell"
+low.qual <- sce.seger$Quality == "OK, filtered"
 
 library(scater)
 stats <- perCellQCMetrics(sce.seger)
 qc <- quickPerCellQC(stats, percent_subsets="altexps_ERCC_percent",
     batch=sce.seger$Donor,
-    subset=!sce.seger$Donor %in% c("HP1504901", "HP1509101"))
+    subset=!sce.seger$Donor %in% c("H6", "H5"))
 
 sce.seger <- sce.seger[,!(qc$discard | low.qual)]
 ```
@@ -112,10 +112,10 @@ plot(librarySizeFactors(sce.seger), sizeFactors(sce.seger), pch=16,
 ## Variance modelling
 
 We do not use cells with no spike-ins for variance modelling.
-Donor AZ also has very low spike-in counts and is subsequently ignored.
+Donor H1 also has very low spike-in counts and is subsequently ignored.
 
 ```{r variance-modelling}
-for.hvg <- sce.seger[,librarySizeFactors(altExp(sce.seger)) > 0 & sce.seger$Donor!="AZ"]
+for.hvg <- sce.seger[,librarySizeFactors(altExp(sce.seger)) > 0 & sce.seger$Donor!="H1"]
 dec.seger <- modelGeneVarWithSpikes(for.hvg, "ERCC", block=for.hvg$Donor)
 chosen.hvgs <- getTopHVGs(dec.seger, n=2000)
 ```
@@ -174,7 +174,7 @@ gridExtra::grid.arrange(
 
 ```{r, echo=FALSE}
 # Sanity checking the donor effect.
-stopifnot(mean(tab==0) > 0.39)
+stopifnot(mean(tab==0) > 0.4)
 ```
 
 ## Data integration
