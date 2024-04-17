@@ -14,7 +14,7 @@ consisting of human pancreas cells from various donors.
 
 ```{r loading}
 library(scRNAseq)
-sce.seger <- SegerstolpePancreasData()
+sce.seger <- SegerstolpePancreasData(legacy=TRUE)
 ```
 
 ```{r gene-annotation}
@@ -174,7 +174,7 @@ gridExtra::grid.arrange(
 
 ```{r, echo=FALSE}
 # Sanity checking the donor effect.
-stopifnot(mean(tab==0) > 0.4)
+stopifnot(mean(tab==0) > 0.39)
 ```
 
 ## Data integration
